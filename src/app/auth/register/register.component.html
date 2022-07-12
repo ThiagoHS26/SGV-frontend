@@ -50,6 +50,18 @@
                 </select>
               </div>
 
+              <!--Validaciones-->
+              <div class="row">
+                <div class="col-9">
+                  <div class="col text-danger">
+                    <p *ngIf="campoNoValido('nombre')">El nombre es obligatorio</p>
+                    <p *ngIf="campoNoValido('email')">El email es obligatorio</p>
+                    <p *ngIf="campoNoValido('role')">El role es obligatorio</p>
+                    <p *ngIf="contrasenasNoValidas()">Las contraseñas no coinciden</p>
+                  </div>
+                </div>
+              </div>
+
               <div class="row">
                 <!-- /.col -->
                 <div class="col-4">

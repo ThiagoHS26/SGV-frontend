@@ -16,11 +16,13 @@ export class RegisterComponent {
 
   //Form Group
   public registerForm = this.fb.group({
-    nombre: ['Santiago Heredia',[Validators.required]],
-    email: ['santiagoheredia6@gmail.com',[Validators.required, Validators.email]],
-    password: ['Angelique2015',[Validators.required]],
-    passwordConfirm: ['Angelique2015',[Validators.required]],
-    role: ['',[Validators.required]],
+    nombre: ['',[Validators.required]],
+    email: ['',[Validators.required, Validators.email]],
+    password: ['',[Validators.required]],
+    passwordConfirm: ['',[Validators.required]],
+    role: ['',[Validators.required]]
+  },{
+    validators: this.passwordIguales('password','passwordConfirm')
   });
   constructor(private fb:FormBuilder, private router:Router, private usuarioSvc: UsuarioService) {
 
@@ -54,6 +56,42 @@ export class RegisterComponent {
       this.roles.setValue(evento.target.value, {
         onlySelf:true
       });
+    }
+
+    //Validaciones de los campos
+    campoNoValido(campo:string):boolean{
+
+      if(this.registerForm.get(campo).invalid && this.formSubmited){
+        return true;
+      }else{
+        return false;
+      }
+
+    }
+    //Validacion de contraseña
+    contrasenasNoValidas(){
+      const pass1 = this.registerForm.get('password').value;
+      const pass2 = this.registerForm.get('passwordConfirm').value;
+
+      if((pass1 !== pass2)&&(this.formSubmited)){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    passwordIguales(pass1Name:string, pass2Name:string){
+      return (formGroup : FormGroup)=>{
+        const pass1Control = formGroup.get(pass1Name);
+        const pass2Control = formGroup.get(pass2Name);
+
+        if(pass1Control.value === pass2Control.value){
+          pass2Control.setErrors(null);
+        }else{
+          pass2Control.setErrors({noEsIgual:true});
+        }
+
+      }
     }
 
 }
