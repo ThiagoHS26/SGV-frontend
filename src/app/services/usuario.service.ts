@@ -30,11 +30,24 @@ export class UsuarioService {
     }))
   }
 
+  //obtener token
+  get token():string{
+    return localStorage.getItem('token');
+  }
+
   //obtener usuarios
   obtenerUsuarios(){
     let headers = new HttpHeaders({
-      'token': localStorage.getItem('token')
+      'token': localStorage.getItem('token')//reemplazar por nuevo metodo get token
     });
     return this.http.get(`${URL}/usuarios`,{headers});
+  }
+
+  //Eliminar usuarios
+  deleteUsuario(id:string){
+    let headers = new HttpHeaders({
+      'token':this.token
+    });
+    return this.http.delete(`${URL}/usuarios/${id}`,{headers});
   }
 }
