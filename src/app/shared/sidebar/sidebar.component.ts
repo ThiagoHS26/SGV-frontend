@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SidebarService } from 'src/app/services/sidebar.service';
+import * as $ from 'jquery';
+
+declare var $:any;
 
 @Component({
   selector: 'app-sidebar',
@@ -17,9 +20,11 @@ export class SidebarComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    $('[data-widget="treeview"]').Treeview('init');
   }
   /*Cerrar sesion */
   logout(){
+    localStorage.removeItem('token');
     this.router.navigateByUrl('/login');
   }
 

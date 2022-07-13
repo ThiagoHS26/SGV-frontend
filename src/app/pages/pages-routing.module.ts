@@ -8,9 +8,10 @@ import { ProductosComponent } from './productos/productos.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { ComprasComponent } from './compras/compras.component';
 import { ClientesComponent } from './clientes/clientes.component';
+import { AuthGuard } from '../guards/auth.guard';
 
 const routes:Routes=[
-  {path:'dashboard',component:PagesComponent,//Ruta padre
+  {path:'dashboard',component:PagesComponent,canActivate:[AuthGuard],//Ruta padre
     children:[
       {path:'',component:DashboardComponent, data:{titulo:'Dashboard'}},
       {path:'usuarios',component:UsuariosComponent, data:{titulo:'Usuarios'}},
