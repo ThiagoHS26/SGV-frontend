@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { environment } from 'src/environments/environment';
 import { LoginForm } from '../interfaces/login-form.interface';
@@ -28,5 +28,13 @@ export class UsuarioService {
       localStorage.setItem('token',res.token);
       //console.log(res.token);
     }))
+  }
+
+  //obtener usuarios
+  obtenerUsuarios(){
+    let headers = new HttpHeaders({
+      'token': localStorage.getItem('token')
+    });
+    return this.http.get(`${URL}/usuarios`,{headers});
   }
 }

@@ -8,7 +8,6 @@ import { PagesModule } from './pages/pages.module';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +18,7 @@ import { AppRoutingModule } from './app-routing.module';
     AppRoutingModule,
     AuthModule,
     HttpClientModule,
-    PagesModule
+    PagesRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

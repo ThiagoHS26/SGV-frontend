@@ -9,6 +9,7 @@ import { VentasComponent } from './ventas/ventas.component';
 import { PagesComponent } from './pages.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
+import { DataTablesModule } from 'angular-datatables';
 
 
 
@@ -25,7 +26,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    DataTablesModule
   ],
   exports:[
     DashboardComponent,

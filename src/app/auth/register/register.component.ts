@@ -37,6 +37,7 @@ export class RegisterComponent {
       //Realizar posteo
       this.usuarioSvc.newUsuario(this.registerForm.value).subscribe(res =>{
         Swal.fire('Exito','Usuario creado correctamente','success');
+        this.router.navigateByUrl('/login');
         //console.log(res);
       }, (e:any)=>{
         const errorServer = JSON.parse(e.error);
