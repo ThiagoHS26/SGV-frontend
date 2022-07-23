@@ -4,6 +4,8 @@ import { RegisterForm } from '../interfaces/register-form.interface';
 import { environment } from 'src/environments/environment';
 import { LoginForm } from '../interfaces/login-form.interface';
 import { tap } from 'rxjs/operators';
+import { CambioPassword } from '../interfaces/cambio-password.interface';
+import { EditUsuario } from '../interfaces/edit-user.interface';
 
 //Http://localhost:3000
 const URL = environment.urlServer;
@@ -26,6 +28,7 @@ export class UsuarioService {
 
     return this.http.post(`${URL}/auth/login`,formData).pipe(tap((res:any)=>{
       localStorage.setItem('token',res.token);
+      localStorage.setItem('UsuarioId', res.usuario.id);
       //console.log(res.token);
     }))
   }
@@ -50,4 +53,28 @@ export class UsuarioService {
     });
     return this.http.delete(`${URL}/usuarios/${id}`,{headers});
   }
+  //Cambiar contraseña
+  cambioPassword(id:string, cambioPass:CambioPassword){
+    let headers = new HttpHeaders({
+      'token':this.token
+    });
+    return this.http.put(`${URL}/usuarios/cambio-password/${id}`, cambioPass,{headers, responseType:'text'});
+  }
+
+  //editar usuario
+  obtenerIdUsuario(id:string){
+    let headers = new HttpHeaders({
+      'token': this.token
+    });
+    return this.http.get(`${URL}/usuarios/${id}`,{headers});
+  }
+
+  editarUsuario(id:string, editData:EditUsuario){
+    let headers = new HttpHeaders({
+      'token': this.token
+    });
+    return this.http.put(`${URL}/usuarios/${id}`, editData, {headers});
+
+  }
+
 }

@@ -6,6 +6,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 
+declare var $:any;
+
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
@@ -30,6 +32,11 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     role: ['',[Validators.required]]
   },{
     validators: this.passwordIguales('password','passwordConfirm')
+  });
+
+  public cambioContrasena = this.fb.group({
+    oldPassword: [''],
+    newPassword: ['']
   });
 
   constructor(private usuarioSvc:UsuarioService, private fb:FormBuilder, private router:Router) { }
@@ -69,7 +76,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       Swal.fire({
         icon:'success',
         title:'Exito',
-        text:'Usuario creado',
+        text:'Usuario creado correctamente',
         showConfirmButton:true
       }).then((result)=>{
         location.reload();//para recargar la pagina y mostrar los datos 
@@ -82,27 +89,112 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   //Eliminar usuario
   eliminarUsuario(id:string){
-    Swal.fire({
-      icon:'question',
-      title:'¿Seguro que quieres eliminar a este usuario?',
-      showCancelButton:true,
-      confirmButtonText:'Confirmar'
-    }).then((result)=>{
-      if(result.isConfirmed){
-        this.usuarioSvc.deleteUsuario(id).subscribe((res:any)=>{
-          Swal.fire({
-            icon:'success',
-            title:'Usuario eliminado',
-            confirmButtonText:'Ok'
-          }).then((result)=>{
-            if(result){
-              location.reload();
-            }
+    if(id == localStorage.getItem('UsuarioId')){
+      Swal.fire('Error','No puedes eliminar un usuario activo','error');
+    }else{
+      Swal.fire({
+        icon:'question',
+        title:'¿Seguro que quieres eliminar a este usuario?',
+        showCancelButton:true,
+        confirmButtonText:'Confirmar'
+      }).then((result)=>{
+        if(result.isConfirmed){
+          this.usuarioSvc.deleteUsuario(id).subscribe((res:any)=>{
+            Swal.fire({
+              icon:'success',
+              title:'Usuario eliminado correctamente',
+              confirmButtonText:'Ok'
+            }).then((result)=>{
+              if(result){
+                location.reload();
+              }
+            });
           });
-        });
-      }
+        }
+      });
+    }
+  }
+
+  //cambio contraseña
+  cambiarPass(id:string){
+    let idUser = id;
+    console.log(idUser);
+
+    $('#cambiarPass').modal('toggle');
+    $('#cambiarPass').modal('show');
+
+    localStorage.setItem('userId',idUser);
+    
+  }
+  //llenar el formulario para editar
+  llenarForm(id:string){
+    this.usuarioSvc.obtenerIdUsuario(id).subscribe(res=>{
+      //console.log(res);
+     this.registerForm.setValue({
+        
+      nombre:res['nombre'],
+      email: res['email'],
+      password: '',
+      passwordConfirm:'',
+      role: res['role']
+     });
+
+      $('#editarUsuario').modal('toggle');
+      $('#editarUsuario').modal('show');
+
+      localStorage.setItem('idUser', res['id']);
+
     });
   }
+
+  //Editar Usuario
+  editarUsuario(){
+    //console.log(this.registerForm.value);
+    this.usuarioSvc.editarUsuario(localStorage.getItem('idUser'),this.registerForm.value).subscribe(res=>{
+      Swal.fire({
+        icon:'success',
+        title:'Exito',
+        text:'Usuario actualizado correctamente',
+        confirmButtonText:'Ok'
+      }).then((result)=>{
+        if(result){
+          localStorage.removeItem('idUser');
+          localStorage.removeItem('userId');
+          location.reload();
+        }
+      });
+
+    },(err)=>{
+      const errorEdit = JSON.parse(err.error);
+      Swal.fire('Error',errorEdit.message, 'error');
+    });
+  }
+
+  changePassword(){
+      
+    this.usuarioSvc.cambioPassword(localStorage.getItem('userId'),this.cambioContrasena.value).subscribe(res=>{ 
+      Swal.fire({
+        icon:'success',
+        title: 'Contraseña actualizada correctamente',
+        confirmButtonText:'Ok'
+      }).then((result)=>{
+
+        if (result) {
+          location.reload();
+          localStorage.removeItem('userId');
+        }
+
+      });
+
+    }, (err)=>{
+          
+      const errorPass = JSON.parse(err.error);
+
+      Swal.fire('Error', errorPass.message, 'error');
+
+    });
+  }
+
 
   //Traer Roles
   get roles(){
